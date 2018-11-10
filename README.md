@@ -17,7 +17,7 @@ npm run dev
 # Entorn de producció: construir la App
 npm run build
 
-# Desenvolupament: 
+# Desenvolupament: pujar canvis
 git add . && git commit -m "txt" && git push -u origin master
 ```
 
