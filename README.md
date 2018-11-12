@@ -2,32 +2,36 @@
 
 > Fisioteràpia: Pla d'Atenció Individualitzat
 
-## Comandes
+## Directori de treball
 
-``` bash
+```bash
 # Clonar repositori
 git clone http://localhost:3000/rogerforner/fisioPAI.git
 
 # Instal·lar dependències
-npm install
+yarn install
 
-# Entorn de desenvolupament (localhost:9080)
-npm run dev
-
-# Entorn de producció: construir la App
-npm run build
-
-# Desenvolupament: pujar canvis
+# Pujar els canvis al repositori
 git add . && git commit -m "txt" && git push -u origin master
+```
+
+## Comandes Constructor Electron
+
+```bash
+# Desenvolupament
+yarn serve:electron
+
+# Producció
+yarn build:electron
 ```
 
 ---
 
 Per més informació:
-- [Buefy](https://buefy.github.io/)
-- [Bulma](https://bulma.io/)
-- [electron-vue](https://github.com/SimulatedGREG/electron-vue)
+- [Vuetify](https://vuetifyjs.com/es-MX/)
+- [Vuetify vue-cli 3 plugin](https://github.com/vuetifyjs/vue-cli-plugin-vuetify)
 - [Vue.js](https://vuejs.org/)
+- [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/#installation)
 
 ---
 
