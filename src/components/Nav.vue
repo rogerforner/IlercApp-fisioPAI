@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :mini-variant.sync="mini" app permanent>
+  <v-navigation-drawer :mini-variant="mini" app permanent>
 
     <!-- Capçalera -->
     <v-list class="pa-1">
@@ -46,9 +46,9 @@
     data: () => ({
       mini: true,
       items: [
-        { title: 'Formulari', icon: 'fa-keyboard' },
+        { title: 'Importar', icon: 'fa-file-import' },
         { title: 'Configurar', icon: 'fa-cog' },
-        { title: 'Importar', icon: 'fa-file-import' }
+        { title: 'fisioPAI', icon: 'fa-question-circle' }
       ],
     })
   }
