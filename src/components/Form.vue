@@ -120,7 +120,7 @@
       <!-- Botons -->
       <v-card-actions>
         <v-btn flat color="primary" @click.native="dialogWithGeneratedText = true">Generar text <v-icon right>fa-file-signature</v-icon></v-btn>
-        <v-btn flat color="primary">Guardar <v-icon right>fa-save</v-icon></v-btn>
+        <v-btn flat color="primary" @click="saveDataFormToFile()">Guardar <v-icon right>fa-save</v-icon></v-btn>
       </v-card-actions>
     </v-card>
 
@@ -202,8 +202,13 @@
       userBarthelTest: "",
       userObservations: "",
       userDetectionNeeds: "",
-      dataForm: []
-    })
+      dataForm: "",
+    }),
+    methods: {
+      saveDataFormToFile() {
+        alert("Guardar");
+      }
+    }
   }
 </script>
 
