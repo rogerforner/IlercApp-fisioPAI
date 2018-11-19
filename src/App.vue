@@ -7,6 +7,8 @@
     <v-content>
       <Form/>
     </v-content>
+
+    <!-- Informar Usuari -->
   </v-app>
 </template>
 
