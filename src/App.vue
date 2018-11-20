@@ -8,19 +8,22 @@
       <Form/>
     </v-content>
 
-    <!-- Informar Usuari -->
+    <!-- Configuració -->
+    <Config/>
   </v-app>
 </template>
 
 <script>
 import Nav from './components/Nav'
 import Form from './components/Form'
+import Config from './components/Config'
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Nav,
-    Form
+    Form,
+    Config
   },
   data () {
     return {

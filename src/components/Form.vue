@@ -119,7 +119,7 @@
 
       <!-- Botons -->
       <v-card-actions>
-        <v-btn flat color="primary" @click.native="dialogWithGeneratedText = true">Generar <v-icon right>fa-file-signature</v-icon></v-btn>
+        <v-btn flat color="primary" @click="dataFormToText()">Generar text <v-icon right>fa-file-signature</v-icon></v-btn>
         <v-btn flat color="primary" @click="saveDataFormToFile()">Desar <v-icon right>fa-save</v-icon></v-btn>
       </v-card-actions>
     </v-card>
@@ -133,7 +133,7 @@
           <v-divider></v-divider>
 
           <!-- Cos -->
-          <v-card-text>
+          <v-card-text id="generatedText">
             <span v-if="dataForm.userSex == 'dona'">Usuària</span><span v-else>Usuari</span>
             <span v-if="dataForm.userAge"> de {{dataForm.userAge}} anys</span>.
             <span v-if="dataForm.userService"> Servei de {{dataForm.userService}}.</span>
@@ -173,9 +173,10 @@
 </template>
 
 <script>
-  const fs = require('fs');
-  const {dialog, app} = require('electron').remote;
+  const fs = require("fs");
+  const {app, clipboard, dialog} = require("electron").remote;
   export default {
+    name: "Form",
     data: () => ({
       dialogWithGeneratedText: false,
       // Dades del formulari
@@ -235,7 +236,8 @@
       }
     }),
     methods: {
-      // Tests
+      // Tests: Resultats
+      // -----------------------------------------------------------------------
       userTestsResult(type) {
         let message;
         let num;
@@ -288,7 +290,19 @@
 
         return message;
       },
+      // Generar el text
+      // -----------------------------------------------------------------------
+      dataFormToText() {
+        let text = document.querySelector("#generatedText").textContent;
+
+        // Obrir el "modal" amb el text generat.
+        this.dialogWithGeneratedText = true;
+
+        // Copiar text de forma automàtica.
+        clipboard.writeText(text);
+      },
       // Guardar dades formulari.
+      // -----------------------------------------------------------------------
       saveDataFormToFile() {
         const content = JSON.stringify(this.dataForm);
         const options = {
