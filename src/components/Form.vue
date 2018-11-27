@@ -135,7 +135,7 @@
           <!-- Cos -->
           <v-card-text id="generatedText">
             <span v-if="dataForm.userSex == 'dona'">Usuària</span><span v-else>Usuari</span>
-            <span v-if="dataForm.userAge"> de {{dataForm.userAge}} anys</span>.
+            <span v-if="dataForm.userAge"> de {{dataForm.userAge}} anys.</span>
             <span v-if="dataForm.userService"> Servei de {{dataForm.userService}}.</span>
             <span v-if="dataForm.userLocation"> Ubicat al menjador {{dataForm.userLocation}}.</span>
             <span v-if="dataForm.userAntecedents"> Presenta com antecedents: {{dataForm.userAntecedents}}.</span>
@@ -164,6 +164,7 @@
 
           <!-- Botons -->
           <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn flat color="primary" @click.native="dialogWithGeneratedText = false">Tancar</v-btn>
           </v-card-actions>
         </v-card>
@@ -181,7 +182,7 @@
       dialogWithGeneratedText: false,
       // Dades del formulari
       dataForm: {
-        formType: "fisiopaiData",
+        dataType: "fisiopaiData",
         userSex: "dona",
         userAge: "",
         userService: null,
