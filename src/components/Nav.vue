@@ -26,6 +26,16 @@
     <!-- Botons -->
     <v-list class="pt-0" dense>
       <v-divider></v-divider>
+      <!-- Formulari -->
+      <v-list-tile @click="openForm()">
+        <v-list-tile-action>
+          <v-icon color="primary">fa-keyboard</v-icon>
+        </v-list-tile-action>
+
+        <v-list-tile-content>
+          <v-list-tile-title>Formulari</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
       <!-- Importar -->
       <v-list-tile @click="openImport()">
         <v-list-tile-action>
@@ -69,17 +79,22 @@
       mini: true,
     }),
     methods: {
-      // Obrir finsetra "Importació Dades"
+      // Mostrar pantalla "Formulari"
+      // -----------------------------------------------------------------------
+      openForm() {
+        //...
+      },
+      // Mostrar modal "Importació Dades"
       // -----------------------------------------------------------------------
       openImport() {
         this.$eventBus.$emit("navImport:change");
       },
-      // Obrir finestra "Configuració"
+      // Mostrar pantalla "Configuració"
       // -----------------------------------------------------------------------
       openConfig() {
-        this.$eventBus.$emit("navConfig:change");
+        //...
       },
-      // Obrir finestra "Informació"
+      // Obrir modal "Informació"
       // -----------------------------------------------------------------------
       infoFisioPAI() {
         this.$eventBus.$emit("navInfo:change");

@@ -1,17 +1,22 @@
 <template>
   <v-container>
     <v-card>
-      <!-- Títol -->
-      <v-card-title primary-title>
-        <h3 v-if="dataForm.userSex == 'dona'" class="headline mb-0">Dades de l'usuària</h3>
-        <h3 v-else class="headline mb-0">Dades de l'usuari</h3>
-      </v-card-title>
+      <!-- Barra superior
+      =======================================================================-->
+      <v-toolbar dark color="primary">
+        <v-toolbar-title>
+          Dades de l'<span v-if="dataForm.userSex == 'dona'">usuaria</span><span v-else>usuari</span>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon right>fa-keyboard</v-icon>
+      </v-toolbar>
 
-      <!-- Formulari -->
+      <!-- Formulari
+      =======================================================================-->
       <v-card-text>
         <v-form>
           <!-- Sexe
-          ===================================================================-->
+          ...................................................................-->
           <v-radio-group v-model="dataForm.userSex" :mandatory="false" row>
             <v-radio label="Dona" value="dona" color="primary"></v-radio>
             <v-radio label="Home" value="home" color="primary"></v-radio>
@@ -20,105 +25,106 @@
           </v-radio-group>
 
           <!-- Edat
-          ===================================================================-->
+          ...................................................................-->
           <v-text-field v-model="dataForm.userAge" label="Edat" type="number"></v-text-field>
 
           <!-- Servei
-          ===================================================================-->
+          ...................................................................-->
           <v-select v-model="dataForm.userService" :items="dataFormItems.userServiceItems" label="Servei"></v-select>
 
           <!-- Ubicació
-          ===================================================================-->
+          ...................................................................-->
           <v-select v-model="dataForm.userLocation" :items="dataFormItems.userLocationItems" label="Ubicació"></v-select>
 
           <!-- Antecedents
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userAntecedents" label="Antecedents" rows="3"></v-textarea>
 
           <!-- Estat cognitiu
-          ===================================================================-->
+          ...................................................................-->
           <v-select v-model="dataForm.userCognitiveState" :items="dataFormItems.userCognitiveStateItems" label="Estat cognitiu"></v-select>
 
           <!-- Transferències
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userTransfers" label="Transferències" rows="3"></v-textarea>
 
           <!-- Marxa
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userMarch" label="Marxa" rows="3"></v-textarea>
 
           <!-- Productes de suport / Altres AT
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userSupportProducts" label="Productes de suport / Altres AT" rows="3"></v-textarea>
 
           <!-- Balanç muscular
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userMuscularBalance" label="Balanç muscular" rows="3"></v-textarea>
 
           <!-- Balanç articular
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userJointBalance" label="Balanç articular" rows="3"></v-textarea>
 
           <!-- Dolor/Clínica
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userPain" label="Dolor / Clínica" rows="3"></v-textarea>
 
           <!-- ttm de FST
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userTtm" label="Ttm de FST" rows="3"></v-textarea>
 
           <!-- Evolució
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userEvolution" label="Evolució" rows="3"></v-textarea>
 
           <!-- Estat cutani
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userCutaneousState" label="Estat cutani" rows="3"></v-textarea>
 
           <!-- Pautes específiques
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userSpecificGuidelines" label="Pautes específiques" rows="3"></v-textarea>
 
           <!-- Contencions
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userContentions" label="Contencions / Restriccions" rows="3"></v-textarea>
 
           <!-- TO
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userTo" label="TO" rows="3"></v-textarea>
 
           <!-- Caigudes
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userFalls" label="Caigudes" rows="3"></v-textarea>
 
           <!-- Grup de risc
-          ===================================================================-->
+          ...................................................................-->
           <v-select v-model="dataForm.userRiskGroup" :items="dataFormItems.userRiskGroupItems" label="Grup de risc"></v-select>
 
           <!-- Test Tinetti
-          ===================================================================-->
+          ...................................................................-->
           <v-text-field v-model="dataForm.userTinettiTest" label="Test Tinetti" type="number" :suffix="userTestsResult('tinetti')" hint="Entre 0-18 o 19-23 o 24-28"></v-text-field>
 
           <!-- Test Downton
-          ===================================================================-->
+          ...................................................................-->
           <v-text-field v-model="dataForm.userDowntonTest" label="Test Downton" type="number" :suffix="userTestsResult('downton')" hint="Entre 1-2 o 3-4 o 5-9"></v-text-field>
 
           <!-- Test Barthel
-          ===================================================================-->
+          ...................................................................-->
           <v-text-field v-model="dataForm.userBarthelTest" label="Test Barthel" type="number" :suffix="userTestsResult('barthel')" hint="Entre 0-15 o 20-35 o 40-55 o 60-95 o 100"></v-text-field>
 
           <!-- Adaptació
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userObservations" label="Adaptació" rows="3"></v-textarea>
 
           <!-- Necessitat
-          ===================================================================-->
+          ...................................................................-->
           <v-textarea v-model="dataForm.userDetectionNeeds" label="Necessitat" rows="3"></v-textarea>
         </v-form>
       </v-card-text>
 
       <!-- Botons -->
       <v-card-actions>
+        <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="dataFormToText()">Generar text <v-icon right>fa-file-signature</v-icon></v-btn>
         <v-btn flat color="primary" @click="saveDataFormToFile()">Desar <v-icon right>fa-save</v-icon></v-btn>
       </v-card-actions>

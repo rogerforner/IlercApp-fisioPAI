@@ -1,29 +1,23 @@
 <template>
-  <v-app>
-    <!-- Navegació -->
-    <Nav/>
+  <v-app id="app">
+    <!-- Navegació
+    =========================================================================-->
+    <Navigation/>
 
-    <!-- Contingut -->
+    <!-- SPA
+    =========================================================================-->
     <v-content>
-      <Form/>
+      <router-view/>
     </v-content>
-
-    <!-- Configuració -->
-    <Config/>
   </v-app>
 </template>
 
 <script>
-import Nav from './components/Nav'
-import Form from './components/Form'
-import Config from './components/Config'
-
+import Navigation from './components/Nav'
 export default {
-  name: "App",
+  name: "pai",
   components: {
-    Nav,
-    Form,
-    Config
+    Navigation
   },
   data () {
     return {
