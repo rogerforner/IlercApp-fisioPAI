@@ -27,7 +27,7 @@
     <v-list class="pt-0" dense>
       <v-divider></v-divider>
       <!-- Formulari -->
-      <v-list-tile @click="openForm()">
+      <v-list-tile @click="openPai()">
         <v-list-tile-action>
           <v-icon color="primary">fa-keyboard</v-icon>
         </v-list-tile-action>
@@ -81,8 +81,10 @@
     methods: {
       // Mostrar pantalla "Formulari"
       // -----------------------------------------------------------------------
-      openForm() {
-        //...
+      openPai() {
+        this.$router.push({
+          name: "pai"
+        });
       },
       // Mostrar modal "Importació Dades"
       // -----------------------------------------------------------------------
@@ -92,7 +94,9 @@
       // Mostrar pantalla "Configuració"
       // -----------------------------------------------------------------------
       openConfig() {
-        //...
+        this.$router.push({
+          name: "config"
+        });
       },
       // Obrir modal "Informació"
       // -----------------------------------------------------------------------

@@ -5,10 +5,8 @@
       =======================================================================-->
       <v-toolbar dark color="primary">
         <v-toolbar-title>
-          Dades de l'<span v-if="dataForm.userSex == 'dona'">usuaria</span><span v-else>usuari</span>
+          <v-icon right>fa-keyboard</v-icon> Dades de l'<span v-if="dataForm.userSex == 'dona'">usuaria</span><span v-else>usuari</span>
         </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-icon right>fa-keyboard</v-icon>
       </v-toolbar>
 
       <!-- Formulari
