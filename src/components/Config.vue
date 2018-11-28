@@ -34,15 +34,15 @@
                 <!-- Afegir servei -->
                 <v-btn flat color="primary" @click="openForm('service', 'create')">Afegir <v-icon right>fa-plus-circle</v-icon></v-btn>
                 <!-- Taula -->
-                <v-data-table :items="dataTable.userServices.data" hide-headers>
+                <v-data-table :items="dataTables.userServices.data" hide-headers>
                   <template slot="items" slot-scope="props">
                     <td>{{props.item.name}}</td>
                     <td class="text-xs-right">
                       <v-item-group class="v-btn-group">
-                        <v-btn flat icon dark color="primary" @click="openForm('service', 'update')">
+                        <v-btn flat icon dark color="primary" @click="openForm('service', 'update', props.index)">
                           <v-icon small>fa-pencil-alt</v-icon>
                         </v-btn>
-                        <v-btn flat icon dark color="error">
+                        <v-btn flat icon dark color="error" @click="openForm('service', 'destroy', props.index)">
                           <v-icon small>fa-trash-alt</v-icon>
                         </v-btn>
                       </v-item-group>
@@ -60,10 +60,19 @@
                 <!-- Afegir ubicació -->
                 <v-btn flat color="primary" @click="openForm('location', 'create')">Afegir <v-icon right>fa-plus-circle</v-icon></v-btn>
                 <!-- Taula -->
-                <v-data-table :items="dataTable.userLocations.data" hide-headers>
-                  <template>
-                    <td>xxx</td>
-                    <td>xxx</td>
+                <v-data-table :items="dataTables.userServices.data" hide-headers>
+                  <template slot="items" slot-scope="props">
+                    <td>{{props.item.name}}</td>
+                    <td class="text-xs-right">
+                      <v-item-group class="v-btn-group">
+                        <v-btn flat icon dark color="primary" @click="openForm('location', 'update', props.index)">
+                          <v-icon small>fa-pencil-alt</v-icon>
+                        </v-btn>
+                        <v-btn flat icon dark color="error" @click="openForm('location', 'destroy', props.index)">
+                          <v-icon small>fa-trash-alt</v-icon>
+                        </v-btn>
+                      </v-item-group>
+                    </td>
                   </template>
                 </v-data-table>
               </v-card-text>
@@ -88,7 +97,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" flat @click.native="closeForm()">Cancel·lar</v-btn>
-          <v-btn color="primary" flat>{{dialogs.form.submitName}}</v-btn>
+          <v-btn color="primary" flat @click="manipulateItem(dialogs.form.submitType, dialogs.form.submitAction, dialogs.form.submitId)">{{dialogs.form.submitName}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -107,7 +116,8 @@
           isFormVisible: false,
           title: "",
           formLabel: "",
-          submitName: ""
+          submitName: "",
+          submitAction: "",
         }
       },
       tabs: null,
@@ -116,11 +126,9 @@
         name: ""
       },
       // Dades de la taula
-      dataTable: {
+      dataTables: {
         userServices: {
-          data: [
-            {name: "Hola"},
-          ]
+          data: []
         },
         userLocations: {
           data: []
@@ -130,38 +138,72 @@
     methods: {
       // Obrir la finestra amb el formulari
       // -----------------------------------------------------------------------
-      openForm(type, action) {
+      openForm(type, action, id = null) {
         this.dialogs.form.formLabel = "Nom";
         if (type == "service") {
           // Texts segons el tipus d'acció a realitzar.
           if (action == "create") {
-            this.dialogs.form.title = "Nou servei";
+            this.dialogs.form.title      = "Nou servei";
             this.dialogs.form.submitName = "Afegir";
-          } else {
-            this.dialogs.form.title = "Modificar servei";
+          } else if (action == "update") {
+            this.dialogs.form.title      = "Modificar servei";
             this.dialogs.form.submitName = "Actualitzar";
+          } else {
+            this.dialogs.form.title      = "Esborrar servei";
+            this.dialogs.form.submitName = "Esborrar";
           }
         } else if (type == "location") {
           // Texts segons el tipus d'acció a realitzar.
           if (action == "create") {
-            this.dialogs.form.title = "Nova ubicació";
+            this.dialogs.form.title      = "Nova ubicació";
             this.dialogs.form.submitName = "Afegir";
-          } else {
-            this.dialogs.form.title = "Modificar servei";
+          } else if (action == "update") {
+            this.dialogs.form.title      = "Modificar ubicació";
             this.dialogs.form.submitName = "Actualitzar";
+          } else {
+            this.dialogs.form.title      = "Esborrar ubicació";
+            this.dialogs.form.submitName = "Esborrar";
           }
         }
+        this.dialogs.form.submitType   = type;
+        this.dialogs.form.submitAction = action;
+        this.dialogs.form.submitId     = id;
 
-        // Obrir
+        // Obrir.
         this.dialogs.form.isFormVisible = true;
       },
       // Tancar la finestra amb el formulari
       // -----------------------------------------------------------------------
       closeForm() {
         this.dialogs.form.isFormVisible = false;
+        this.dataForm.name = "";
       },
-      // Editar/Crear
+      // Crear / Editar / Esborrar
       // -----------------------------------------------------------------------
+      manipulateItem(type, action, id) {
+        if (type == "service") {
+          if (action == "create") {
+            // Insertem les dades en l'array.
+            this.dataTables.userServices.data.push({name: this.dataForm.name});
+          } else if (action == "update") {
+            // Obtenim l'objecte d'index "id" i assignem el nou valor a "name".
+            // L'id representa l'índex de l'objecte (mirar taula props.index).
+            this.dataTables.userServices.data[id].name = this.dataForm.name;
+          } else {
+
+          }
+        } else if (type == "location") {
+          if (action == "create") {
+            this.dataTables.userLocations.data.push({name: this.dataForm.name});
+          } else if (action == "update") {
+            this.dataTables.userLocations.data[id].name = this.dataForm.name;
+          } else {
+
+          }
+        }
+        // Tancar.
+        this.closeForm();
+      }
     }
   }
 </script>
