@@ -9,15 +9,15 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn dark flat @click="dialogs.isConfigVisible = false">Desar <v-icon right>fa-save</v-icon></v-btn>
+          <v-btn dark flat @click="saveDataFormToFile()">Desar <v-icon right>fa-save</v-icon></v-btn>
         </v-toolbar-items>
         <!-- Pestanyes -->
         <v-tabs slot="extension" v-model="tabs" centered color="transparent" slider-color="white">
           <v-tab>
-            Servei
+            Serveis
           </v-tab>
           <v-tab>
-            Ubicació
+            Ubicacions
           </v-tab>
         </v-tabs>
       </v-toolbar>
@@ -39,10 +39,10 @@
                     <td>{{props.item.name}}</td>
                     <td class="text-xs-right">
                       <v-item-group class="v-btn-group">
-                        <v-btn flat icon dark color="primary" @click="openForm('service', 'update', props.index)">
+                        <v-btn flat icon dark color="primary" @click="openForm('service', 'update', props.index, props.item.name)">
                           <v-icon small>fa-pencil-alt</v-icon>
                         </v-btn>
-                        <v-btn flat icon dark color="error" @click="openForm('service', 'destroy', props.index)">
+                        <v-btn flat icon dark color="error" @click="openForm('service', 'destroy', props.index, props.item.name)">
                           <v-icon small>fa-trash-alt</v-icon>
                         </v-btn>
                       </v-item-group>
@@ -60,7 +60,7 @@
                 <!-- Afegir ubicació -->
                 <v-btn flat color="primary" @click="openForm('location', 'create')">Afegir <v-icon right>fa-plus-circle</v-icon></v-btn>
                 <!-- Taula -->
-                <v-data-table :items="dataTables.userServices.data" hide-headers>
+                <v-data-table :items="dataTables.userLocations.data" hide-headers>
                   <template slot="items" slot-scope="props">
                     <td>{{props.item.name}}</td>
                     <td class="text-xs-right">
@@ -105,10 +105,12 @@
 </template>
 
 <script>
+  const fs = require("fs");
+  const {app, dialog} = require("electron").remote;
   export default {
     name: "Config",
     created () {
-      //
+      this.readFromImaginaryDatabase();
     },
     data: () => ({
       dialogs: {
@@ -133,38 +135,49 @@
         userLocations: {
           data: []
         }
+      },
+      // Desar fitxer.
+      dataStore: {
+        dataType: "fisiopaiConfig",
+        data: []
       }
     }),
     methods: {
       // Obrir la finestra amb el formulari
       // -----------------------------------------------------------------------
-      openForm(type, action, id = null) {
+      openForm(type, action, id = null, name = null) {
         this.dialogs.form.formLabel = "Nom";
+        // Texts definits pel tipus.
         if (type == "service") {
-          // Texts segons el tipus d'acció a realitzar.
           if (action == "create") {
-            this.dialogs.form.title      = "Nou servei";
-            this.dialogs.form.submitName = "Afegir";
+            this.dialogs.form.title = "Nou servei";
           } else if (action == "update") {
-            this.dialogs.form.title      = "Modificar servei";
-            this.dialogs.form.submitName = "Actualitzar";
+            this.dialogs.form.title = "Modificar servei";
           } else {
-            this.dialogs.form.title      = "Esborrar servei";
-            this.dialogs.form.submitName = "Esborrar";
+            this.dialogs.form.title = "Esborrar servei";
           }
         } else if (type == "location") {
-          // Texts segons el tipus d'acció a realitzar.
           if (action == "create") {
-            this.dialogs.form.title      = "Nova ubicació";
-            this.dialogs.form.submitName = "Afegir";
+            this.dialogs.form.title = "Nova ubicació";
           } else if (action == "update") {
-            this.dialogs.form.title      = "Modificar ubicació";
-            this.dialogs.form.submitName = "Actualitzar";
+            this.dialogs.form.title = "Modificar ubicació";
           } else {
-            this.dialogs.form.title      = "Esborrar ubicació";
-            this.dialogs.form.submitName = "Esborrar";
+            this.dialogs.form.title = "Esborrar ubicació";
           }
         }
+
+        // Texts generals.
+        if (action == "create") {
+          this.dialogs.form.submitName = "Afegir";
+        } else if (action == "update") {
+          this.dialogs.form.submitName = "Actualitzar";
+          this.dataForm.name           = name;
+        } else {
+          this.dialogs.form.submitName = "Esborrar";
+          this.dataForm.name           = name;
+        }
+
+        // Dades emprades en la funció "manipulateItem(type, action, id)".
         this.dialogs.form.submitType   = type;
         this.dialogs.form.submitAction = action;
         this.dialogs.form.submitId     = id;
@@ -190,7 +203,10 @@
             // L'id representa l'índex de l'objecte (mirar taula props.index).
             this.dataTables.userServices.data[id].name = this.dataForm.name;
           } else {
-
+            // Obtenim l'arrai i eliminem l'element posicionat en l'index "id".
+            // El número 1 representa el total d'elements a esborrar a partir
+            // de l'index (només volem esborrar-ne 1).
+            this.dataTables.userServices.data.splice(id, 1);
           }
         } else if (type == "location") {
           if (action == "create") {
@@ -198,11 +214,79 @@
           } else if (action == "update") {
             this.dataTables.userLocations.data[id].name = this.dataForm.name;
           } else {
-
+            this.dataTables.userLocations.data.splice(id, 1);
           }
         }
+
+        // Guardar/Llegir dades en fitxer que simula la BD de la app.
+        this.storeIntoImaginaryDatabase();
+        this.readFromImaginaryDatabase();
+
         // Tancar.
         this.closeForm();
+      },
+      // Desar dades de configuració.
+      // -----------------------------------------------------------------------
+      saveDataFormToFile() {
+        // Guardar dades del formulari en array preparat per a aquestes.
+        this.dataStore.data = []; // Buidar.
+        this.dataStore.data.push(this.dataTables);
+
+        // Convertir a JSON i Guardar en fitxer.
+        let content = JSON.stringify(this.dataStore);
+        let options = {
+          // Ruta a directori per defecte + nom per defecte (modificable).
+          defaultPath: app.getPath("documents") + "/fisiopai-configuració.json",
+          filters: [{
+            name: "fisioPAI",    // Nom del tipus de fitxer (desplegable).
+            extensions: ["json"] // Extensions dels fitxers a visualitzar.
+          }]
+        }
+
+        dialog.showSaveDialog(null, options, (filename) => {
+          try {
+            fs.writeFileSync(filename, content, 'utf-8');
+          } catch(e) {
+            alert("No s'ha desat el fitxer.");
+          }
+        });
+      },
+      // Tractar fitxer que simula la BD.
+      // -----------------------------------------------------------------------
+      storeIntoImaginaryDatabase() {
+        this.dataStore.data = []; // Buidar.
+        this.dataStore.data.push(this.dataTables);
+
+        let data     = JSON.stringify(this.dataStore.data);
+        let filename = "fisiopaiConfig.json";
+
+        try {
+          fs.writeFileSync(filename, data, "utf-8");
+        } catch(e) {
+          alert("No s'han desat les dades.");
+        }
+      },
+      readFromImaginaryDatabase() {
+        let filename = "fisiopaiConfig.json";
+        let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
+
+        try {
+          content = JSON.parse(fs.readFileSync("fisiopaiConfig.json", "utf-8"));
+
+          this.dataTables.userServices.data  = []; // Buidar.
+          this.dataTables.userLocations.data = [];
+
+          this.dataTables.userServices.data  = content[0].userServices.data;
+          this.dataTables.userLocations.data = content[0].userLocations.data;
+        } catch(e) {
+          alert("No existeix cap base de dades.");
+
+          try {
+            fs.writeFileSync(filename, content, "utf-8");
+          } catch(e) {
+            alert("No s'ha creat la base de dades.");
+          }
+        }
       }
     }
   }

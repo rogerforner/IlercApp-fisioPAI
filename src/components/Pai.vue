@@ -28,11 +28,15 @@
 
           <!-- Servei
           ...................................................................-->
-          <v-select v-model="dataForm.userService" :items="dataFormItems.userServiceItems" label="Servei"></v-select>
+          <v-select v-model="dataForm.userService"
+                    :items="dataFormItems.userServiceItems" item-text="name"
+                    label="Servei"></v-select>
 
           <!-- Ubicació
           ...................................................................-->
-          <v-select v-model="dataForm.userLocation" :items="dataFormItems.userLocationItems" label="Ubicació"></v-select>
+          <v-select v-model="dataForm.userLocation"
+                    :items="dataFormItems.userLocationItems" item-text="name"
+                    label="Ubicació"></v-select>
 
           <!-- Antecedents
           ...................................................................-->
@@ -182,11 +186,13 @@
   const {app, clipboard, dialog} = require("electron").remote;
   export default {
     name: "Form",
+    created () {
+      this.readFromImaginaryDatabase();
+    },
     data: () => ({
       dialogWithGeneratedText: false,
       // Dades del formulari
       dataForm: {
-        dataType: "fisiopaiData",
         userSex: "dona",
         userAge: "",
         userService: null,
@@ -214,17 +220,8 @@
         userDetectionNeeds: "",
       },
       dataFormItems: {
-        userServiceItems: [
-          "Residència",
-          "Residència (IT)",
-          "Centre de dia",
-          "Centre de dia (IT)"
-        ],
-        userLocationItems: [
-          "La Petja",
-          "Coll de l'Alba",
-          "Mig Camí"
-        ],
+        userServiceItems: [],
+        userLocationItems: [],
         userCognitiveStateItems: [
           "Sense afecció",
           "Lleu",
@@ -238,6 +235,11 @@
           "D",
           "E"
         ],
+      },
+      // Desar fitxer.
+      dataStore: {
+        dataType: "fisiopaiForm",
+        data: []
       }
     }),
     methods: {
@@ -306,11 +308,15 @@
         // Copiar text de forma automàtica.
         clipboard.writeText(text);
       },
-      // Guardar dades formulari.
+      // Desar dades formulari.
       // -----------------------------------------------------------------------
       saveDataFormToFile() {
-        const content = JSON.stringify(this.dataForm);
-        const options = {
+        // Guardar dades del formulari en array preparat per a aquestes.
+        this.dataStore.data.push(this.dataForm);
+
+        // Convertir a JSON i Guardar en fitxer.
+        let content = JSON.stringify(this.dataStore);
+        let options = {
           // Ruta a directori per defecte + nom per defecte (modificable).
           defaultPath: app.getPath("documents") + "/fisiopai.json",
           filters: [{
@@ -321,11 +327,35 @@
 
         dialog.showSaveDialog(null, options, (filename) => {
           try {
-            fs.writeFileSync(filename, content, 'utf-8');
+            fs.writeFileSync(filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha desat el fitxer.");
           }
         });
+      },
+      // Tractar fitxer que simula la BD.
+      // -----------------------------------------------------------------------
+      readFromImaginaryDatabase() {
+        let filename = "fisiopaiConfig.json";
+        let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
+
+        try {
+          content = JSON.parse(fs.readFileSync("fisiopaiConfig.json", "utf-8"));
+
+          this.dataFormItems.userServiceItems  = []; // Buidar.
+          this.dataFormItems.userLocationItems = [];
+
+          this.dataFormItems.userServiceItems  = content[0].userServices.data;
+          this.dataFormItems.userLocationItems = content[0].userLocations.data;
+        } catch(e) {
+          alert("No existeix cap base de dades.");
+
+          try {
+            fs.writeFileSync(filename, content, "utf-8");
+          } catch(e) {
+            alert("No s'ha creat la base de dades.");
+          }
+        }
       }
     }
   }
