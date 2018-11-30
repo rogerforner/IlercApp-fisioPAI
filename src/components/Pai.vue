@@ -7,12 +7,16 @@
         <v-toolbar-title>
           <v-icon right>fa-keyboard</v-icon> Dades de l'<span v-if="dataForm.userSex == 'dona'">usuaria</span><span v-else>usuari</span>
         </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn dark flat @click="saveDataFormToFile()">Desar <v-icon right>fa-save</v-icon></v-btn>
+        </v-toolbar-items>
       </v-toolbar>
 
       <!-- Formulari
       =======================================================================-->
       <v-card-text>
-        <v-form>
+        <v-form ref="form">
           <!-- Sexe
           ...................................................................-->
           <v-radio-group v-model="dataForm.userSex" :mandatory="false" row>
@@ -128,7 +132,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="dataFormToText()">Generar text <v-icon right>fa-file-signature</v-icon></v-btn>
-        <v-btn flat color="primary" @click="saveDataFormToFile()">Desar <v-icon right>fa-save</v-icon></v-btn>
+        <v-btn flat color="primary" @click="clearForm()">Nou Formulari <v-icon right>fa-file</v-icon></v-btn>
       </v-card-actions>
     </v-card>
 
@@ -187,6 +191,7 @@
   export default {
     name: "Form",
     created () {
+      // Obtenir dades de la BD imaginària.
       this.readFromImaginaryDatabase();
     },
     data: () => ({
@@ -308,15 +313,24 @@
         // Copiar text de forma automàtica.
         clipboard.writeText(text);
       },
+      // Netejar el formulari (nou).
+      // -----------------------------------------------------------------------
+      clearForm() {
+        this.$refs.form.reset();
+        window.scrollTo(0,0); // Enviar al principi de la pàgina.
+      },
       // Desar dades formulari.
       // -----------------------------------------------------------------------
       saveDataFormToFile() {
         // Guardar dades del formulari en array preparat per a aquestes.
         this.dataStore.data.push(this.dataForm);
 
-        // Convertir a JSON i Guardar en fitxer.
+        // Convertir a JSON.
         let content = JSON.stringify(this.dataStore);
+
+        // Definir opcions finestra per guardar fitxer.
         let options = {
+          title: "Desar dades",
           // Ruta a directori per defecte + nom per defecte (modificable).
           defaultPath: app.getPath("documents") + "/fisiopai.json",
           filters: [{
@@ -325,6 +339,7 @@
           }]
         }
 
+        // Obrir finestra per guardar dades en fitxer.
         dialog.showSaveDialog(null, options, (filename) => {
           try {
             fs.writeFileSync(filename, content, "utf-8");

@@ -232,9 +232,22 @@
         this.dataStore.data = []; // Buidar.
         this.dataStore.data.push(this.dataTables);
 
+        // Ordenar arrays d'objectes.
+        this.dataStore.data[0].userServices.data.sort(function (service1, service2) {
+          if (service1.name > service2.name) return 1;
+          if (service1.name < service2.name) return -1;
+        });
+        this.dataStore.data[0].userLocations.data.sort(function (location1, location2) {
+          if (location1.name > location2.name) return 1;
+          if (location1.name < location2.name) return -1;
+        });
+
         // Convertir a JSON i Guardar en fitxer.
         let content = JSON.stringify(this.dataStore);
+
+        // Definir opcions finestra per importar fitxer.
         let options = {
+          title: "Desar configuració",
           // Ruta a directori per defecte + nom per defecte (modificable).
           defaultPath: app.getPath("documents") + "/fisiopai-configuració.json",
           filters: [{
@@ -243,9 +256,10 @@
           }]
         }
 
+        // Obrir finestra per guardar dades en fitxer.
         dialog.showSaveDialog(null, options, (filename) => {
           try {
-            fs.writeFileSync(filename, content, 'utf-8');
+            fs.writeFileSync(filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha desat el fitxer.");
           }
@@ -256,6 +270,16 @@
       storeIntoImaginaryDatabase() {
         this.dataStore.data = []; // Buidar.
         this.dataStore.data.push(this.dataTables);
+
+        // Ordenar arrays d'objectes.
+        this.dataStore.data[0].userServices.data.sort(function (service1, service2) {
+          if (service1.name > service2.name) return 1;
+          if (service1.name < service2.name) return -1;
+        });
+        this.dataStore.data[0].userLocations.data.sort(function (location1, location2) {
+          if (location1.name > location2.name) return 1;
+          if (location1.name < location2.name) return -1;
+        });
 
         let data     = JSON.stringify(this.dataStore.data);
         let filename = "fisiopaiConfig.json";
