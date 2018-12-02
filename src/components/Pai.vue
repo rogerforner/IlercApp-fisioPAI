@@ -403,7 +403,7 @@
           this.dataFormItems.userServiceItems  = content[0].userServices.data;
           this.dataFormItems.userLocationItems = content[0].userLocations.data;
         } catch(e) {
-          alert("No existeix cap base de dades.");
+          // alert("No existeix cap base de dades.");
 
           try {
             fs.writeFileSync(filename, content, "utf-8");
@@ -454,7 +454,7 @@
 
           this.dataForm  = content[0];
         } catch(e) {
-          alert("No existeix la taula per poder emmagatzemar les dades del formulari temporalment.");
+          // alert("No existeix la taula per poder emmagatzemar les dades del formulari temporalment.");
 
           try {
             fs.writeFileSync(filename, content, "utf-8");
