@@ -4,23 +4,20 @@
     =========================================================================-->
     <Navigation/>
 
-    <!-- SPA
+    <!-- Contingut (pàgines)
     =========================================================================-->
     <v-content>
       <router-view/>
     </v-content>
-
-    <!-- Modals
-    =========================================================================-->
   </v-app>
 </template>
 
 <script>
 import Navigation from './components/Nav'
 export default {
-  name: "pai",
+  name: "fisiopai",
   components: {
-    Navigation
+    Navigation,
   },
   data () {
     return {

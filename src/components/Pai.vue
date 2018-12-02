@@ -138,7 +138,7 @@
 
     <!-- Modal Generar Text -->
     <v-layout row justify-center>
-      <v-dialog v-model="dialogWithGeneratedText" scrollable>
+      <v-dialog v-model="dialogs.dialogWithGeneratedText" scrollable>
         <v-card>
           <!-- Títol -->
           <v-card-title primary-title class="headline">Text generat</v-card-title>
@@ -177,7 +177,7 @@
           <!-- Botons -->
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn flat color="primary" @click.native="dialogWithGeneratedText = false">Tancar</v-btn>
+            <v-btn flat color="primary" @click.native="dialogs.dialogWithGeneratedText = false">Tancar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -189,14 +189,31 @@
   const fs = require("fs");
   const {app, clipboard, dialog} = require("electron").remote;
   export default {
-    name: "Form",
+    name: "componentForm",
     created () {
-      // Obtenir dades de la BD imaginària.
       this.readFromImaginaryDatabase();
+      this.readFromFileTemp();
+      
+      this.$eventBus.$on("saveDataPaiTemp", () => {
+        this.saveDataFormToFileTemp();
+      });
+      this.$eventBus.$on("newDataIntoImaginaryDatabase", () => {
+        this.readFromImaginaryDatabase();
+      });
+      this.$eventBus.$on("newDataIntoFileTemp", () => {
+        this.readFromFileTemp();
+      });
+    },
+    beforeDestroy() {
+      this.$eventBus.$off("saveDataPaiTemp");
+      this.$eventBus.$off("newDataIntoImaginaryDatabase");
+      this.$eventBus.$off("newDataIntoFileTemp");
     },
     data: () => ({
-      dialogWithGeneratedText: false,
-      // Dades del formulari
+      dialogs: {
+        dialogWithGeneratedText: false,
+      },
+      // Dades del formulari.
       dataForm: {
         userSex: "dona",
         userAge: "",
@@ -245,10 +262,13 @@
       dataStore: {
         dataType: "fisiopaiForm",
         data: []
-      }
+      },
     }),
     methods: {
-      // Tests: Resultats
+      /* FORMULARI ************************************************************/
+
+      // Tests -----------------------------------------------------------------
+      // Permet controlar els valors dels tests.
       // -----------------------------------------------------------------------
       userTestsResult(type) {
         let message;
@@ -302,24 +322,35 @@
 
         return message;
       },
-      // Generar el text
+
+      // Generar text ----------------------------------------------------------
+      // Permet generar els text amb les dades del formulari i copiar aquest,
+      // de forma automàtica, en el portapepers.
       // -----------------------------------------------------------------------
       dataFormToText() {
         let text = document.querySelector("#generatedText").textContent;
 
         // Obrir el "modal" amb el text generat.
-        this.dialogWithGeneratedText = true;
+        this.dialogs.dialogWithGeneratedText = true;
 
         // Copiar text de forma automàtica.
         clipboard.writeText(text);
       },
-      // Netejar el formulari (nou).
+
+      // Netejar ---------------------------------------------------------------
+      // Netejar el formulari per poder-ne començar un de nou.
       // -----------------------------------------------------------------------
       clearForm() {
         this.$refs.form.reset();
+        this.dataForm = this.dataForm;
         window.scrollTo(0,0); // Enviar al principi de la pàgina.
       },
-      // Desar dades formulari.
+
+      /* DESAR ****************************************************************/
+
+      // Fitxer ----------------------------------------------------------------
+      // Generar un fitxer JSON amb totes les dades per poder-les importar en un
+      // altre moment.
       // -----------------------------------------------------------------------
       saveDataFormToFile() {
         // Guardar dades del formulari en array preparat per a aquestes.
@@ -343,19 +374,28 @@
         dialog.showSaveDialog(null, options, (filename) => {
           try {
             fs.writeFileSync(filename, content, "utf-8");
+
+            // Buidem "data".
+            this.dataStore.data = [];
+
           } catch(e) {
             alert("No s'ha desat el fitxer.");
           }
         });
       },
-      // Tractar fitxer que simula la BD.
+
+      /* BASE DE DADES ********************************************************/
+
+      // Lectura de la BD ------------------------------------------------------
+      // Llegir el JSON per extreure les dades. En el cas de que no existeixi el
+      // fitxer, aquest es generarà de forma automàtica.
       // -----------------------------------------------------------------------
       readFromImaginaryDatabase() {
-        let filename = "fisiopaiConfig.json";
+        let filename = "fisiopai.config.json";
         let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
 
         try {
-          content = JSON.parse(fs.readFileSync("fisiopaiConfig.json", "utf-8"));
+          content = JSON.parse(fs.readFileSync("fisiopai.config.json", "utf-8"));
 
           this.dataFormItems.userServiceItems  = []; // Buidar.
           this.dataFormItems.userLocationItems = [];
@@ -369,6 +409,57 @@
             fs.writeFileSync(filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha creat la base de dades.");
+          }
+        }
+      },
+      
+      /* FITXER (temporal) ****************************************************/
+
+      // Fitxer temp -----------------------------------------------------------
+      // Generar un fitxer JSON en el que emmagatzemar les dades en el cas de
+      // que es canvie de pàgina. Mitjançant aquest s'evita la pèrdua de dades.
+      // -----------------------------------------------------------------------
+      saveDataFormToFileTemp() {
+        // Guardar dades del formulari en array preparat per a aquestes.
+        this.dataStore.data.push(this.dataForm);
+
+        // Convertir a JSON.
+        let content = JSON.stringify(this.dataStore.data);
+
+        // Desar dades en fitxer temporal.
+        let filename = "fisiopai.temp.json";
+        try {
+          fs.writeFileSync(filename, content, "utf-8");
+
+          // Buidem "data".
+          this.dataStore.data = [];
+          
+        } catch(e) {
+          alert("S'han perdut les dades del formulari.");
+        }
+      },
+
+      // Llegir fitxer temp ----------------------------------------------------
+      // Llegir el fitxer temporal per recuperar les dades. Si no existeix el
+      // fitxer se'n generarà un de forma automàtica.
+      // -----------------------------------------------------------------------
+      readFromFileTemp() {
+        let filename = "fisiopai.temp.json";
+        let content  = '[{"userSex":"dona","userAge":"","userService":null,"userLocation":null,"userAntecedents":"","userCognitiveState":null,"userTransfers":"","userMarch":"","userSupportProducts":"","userMuscularBalance":"","userJointBalance":"","userPain":"","userTtm":"","userEvolution":"","userCutaneousState":"","userSpecificGuidelines":"","userContentions":"","userTo":"","userFalls":"","userRiskGroup":null,"userTinettiTest":"","userDowntonTest":"","userBarthelTest":"","userObservations":"","userDetectionNeeds":""}]';
+
+        try {
+          content = JSON.parse(fs.readFileSync("fisiopai.temp.json", "utf-8"));
+
+          this.dataForm  = []; // Buidar.
+
+          this.dataForm  = content[0];
+        } catch(e) {
+          alert("No existeix la taula per poder emmagatzemar les dades del formulari temporalment.");
+
+          try {
+            fs.writeFileSync(filename, content, "utf-8");
+          } catch(e) {
+            alert("No s'ha creat la taula per poder emmagatzemar les dades del formulari temporalment.");
           }
         }
       }

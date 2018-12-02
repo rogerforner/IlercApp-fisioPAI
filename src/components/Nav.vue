@@ -77,19 +77,39 @@
       mini: true,
     }),
     methods: {
-      // Obrir pàgines (vue-router)
+      /* LINKS ****************************************************************/
+
+      // vue-router ------------------------------------------------------------
+      // Mostrar la pàgina. El paràmetre prendrà com a valor el nom de la ruta,
+      // aquesta definida en la configuració de vue-router "/router/index.js".
+      // Si passem de la pàgina "pai" a "config" hem d'emetre un event que ens
+      // permeti desar les dades del formulari en un fitxer JSON temporal.
       // -----------------------------------------------------------------------
       openPage(pageVueRouterName) {
+        // EventBus.
+        if (this.$route.name != "config") {
+          this.$eventBus.$emit("saveDataPaiTemp");
+        }
+
+        // Canviem de pàgina.
         this.$router.push({
           name: pageVueRouterName
         });
       },
-      // Obrir modal "Informació"
+      
+      // Modal info fisioPAI ---------------------------------------------------
+      // Obrir un modal de vuetify per mostrar informació de la app fisioPAI.
+      // S'empra un "EventBus" per mostrar-lo, capturant-lo en App.vue.
       // -----------------------------------------------------------------------
       infoFisioPAI() {
         this.$eventBus.$emit("navInfo:change");
       },
-      // Mostrar finestra "Importar fitxer de dades"
+
+      // Importar dades --------------------------------------------------------
+      // Permet importar un fitxer de dades. Aquest fitxer pot ser un fitxer de
+      // configuració (amb les dades de la pàgina corresponent) o un fitxer que
+      // contingui les dades del formulari, desades per poder seguir treballant
+      // en un altre moment.
       // -----------------------------------------------------------------------
       openImport() {
         // Definir opcions finestra per importar fitxer.
@@ -117,31 +137,60 @@
             
             // Saber si ens passen les dades del formulari o de configuració.
             if (fileContentJSON.dataType == "fisiopaiForm") {
-              // Crear fitxer temporal
+              // Sobreescriure el fitxer temporal.
+              // Només passem les dades corresponents als camps del formulari.
+              this.saveDataFormToFileTemp(fileContentJSON.data);
 
             } else if (fileContentJSON.dataType == "fisiopaiConfig") {
               // Sobreescriure el fitxer de configuració.
               // Només passem les dades de Serveis i Ubicacions.
               this.storeIntoImaginaryDatabase(fileContentJSON.data);
+
             } else {
               alert("El fitxer que intentes carregar no es vàlid");
             }
+
+            this.$eventBus.$emit("showImportMessage");
             
           } catch(e) {
             alert("No s'ha importat el fitxer.");
           }
         });
       },
-      // Tractar fitxer que simula la BD.
+      
+      /* BASE DE DADES ********************************************************/
+
+      // Desar a la BD ---------------------------------------------------------
+      // Desar les dades en un fitxer JSON, el qual serà tractat com la BD de la
+      // app, permetent la recuperació d'aquestes.
       // -----------------------------------------------------------------------
       storeIntoImaginaryDatabase(dataFile) {
         let data     = JSON.stringify(dataFile);
-        let filename = "fisiopaiConfig.json";
+        let filename = "fisiopai.config.json";
 
         try {
           fs.writeFileSync(filename, data, "utf-8");
+          this.$eventBus.$emit("newDataIntoImaginaryDatabase");
         } catch(e) {
           alert("No s'han desat les dades.");
+        }
+      },
+
+      /* FITXER (temporal) ****************************************************/
+
+      // Fitxer temp -----------------------------------------------------------
+      // Generar un fitxer JSON en el que emmagatzemar les dades en el cas de
+      // que es canvie de pàgina. Mitjançant aquest s'evita la pèrdua de dades.
+      // -----------------------------------------------------------------------
+      saveDataFormToFileTemp(dataFile) {
+        let data     = JSON.stringify(dataFile);
+        let filename = "fisiopai.temp.json";
+
+        try {
+          fs.writeFileSync(filename, data, "utf-8");
+          this.$eventBus.$emit("newDataIntoFileTemp");
+        } catch(e) {
+          alert("S'han perdut les dades del formulari.");
         }
       },
     }

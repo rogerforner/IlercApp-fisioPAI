@@ -108,7 +108,7 @@
   const fs = require("fs");
   const {app, dialog} = require("electron").remote;
   export default {
-    name: "Config",
+    name: "componentConfig",
     created () {
       this.readFromImaginaryDatabase();
     },
@@ -123,11 +123,11 @@
         }
       },
       tabs: null,
-      // Dades del formulari
+      // Dades del formulari.
       dataForm: {
         name: ""
       },
-      // Dades de la taula
+      // Dades de la taula.
       dataTables: {
         userServices: {
           data: []
@@ -143,7 +143,11 @@
       }
     }),
     methods: {
-      // Obrir la finestra amb el formulari
+      /* FORMULARI ************************************************************/
+
+      // Obrir -----------------------------------------------------------------
+      // Permet obrir la finestra del formulari i també inserir els textos que
+      // es corresponguin amb el CRUD, així com en el tipus d'ítem a crear.
       // -----------------------------------------------------------------------
       openForm(type, action, id = null, name = null) {
         this.dialogs.form.formLabel = "Nom";
@@ -185,13 +189,19 @@
         // Obrir.
         this.dialogs.form.isFormVisible = true;
       },
-      // Tancar la finestra amb el formulari
+      
+      // Tancar ----------------------------------------------------------------
+      // Permet tancar la finestra del formulari i, també, resetejar els camps.
       // -----------------------------------------------------------------------
       closeForm() {
         this.dialogs.form.isFormVisible = false;
         this.dataForm.name = "";
       },
-      // Crear / Editar / Esborrar
+
+      /* CRUD *****************************************************************/
+
+      // Crear / Editar / Esborrar ---------------------------------------------
+      // Permet dur endavant la edició, creació i esborrat d'un ítem.
       // -----------------------------------------------------------------------
       manipulateItem(type, action, id) {
         if (type == "service") {
@@ -225,7 +235,12 @@
         // Tancar.
         this.closeForm();
       },
-      // Desar dades de configuració.
+
+      /* DESAR ****************************************************************/
+
+      // Fitxer ----------------------------------------------------------------
+      // Generar un fitxer JSON amb totes les dades per poder-les importar en un
+      // altre moment.
       // -----------------------------------------------------------------------
       saveDataFormToFile() {
         // Guardar dades del formulari en array preparat per a aquestes.
@@ -265,7 +280,12 @@
           }
         });
       },
-      // Tractar fitxer que simula la BD.
+
+      /* BASE DE DADES ********************************************************/
+
+      // Desar a la BD ---------------------------------------------------------
+      // Desar les dades en un fitxer JSON, el qual serà tractat com la BD de la
+      // app, permetent la recuperació d'aquestes.
       // -----------------------------------------------------------------------
       storeIntoImaginaryDatabase() {
         this.dataStore.data = []; // Buidar.
@@ -282,7 +302,7 @@
         });
 
         let data     = JSON.stringify(this.dataStore.data);
-        let filename = "fisiopaiConfig.json";
+        let filename = "fisiopai.config.json";
 
         try {
           fs.writeFileSync(filename, data, "utf-8");
@@ -290,12 +310,17 @@
           alert("No s'han desat les dades.");
         }
       },
+
+      // Lectura de la BD ------------------------------------------------------
+      // Llegir el JSON per extreure les dades. En el cas de que no existeixi el
+      // fitxer, aquest es generarà de forma automàtica.
+      // -----------------------------------------------------------------------
       readFromImaginaryDatabase() {
-        let filename = "fisiopaiConfig.json";
+        let filename = "fisiopai.config.json";
         let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
 
         try {
-          content = JSON.parse(fs.readFileSync("fisiopaiConfig.json", "utf-8"));
+          content = JSON.parse(fs.readFileSync("fisiopai.config.json", "utf-8"));
 
           this.dataTables.userServices.data  = []; // Buidar.
           this.dataTables.userLocations.data = [];
