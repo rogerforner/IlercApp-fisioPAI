@@ -197,17 +197,17 @@
       this.$eventBus.$on("saveDataPaiTemp", () => {
         this.saveDataFormToFileTemp();
       });
-      this.$eventBus.$on("newDataIntoImaginaryDatabase", () => {
+      this.$eventBus.$on("dbChangeInfoToPai", () => {
         this.readFromImaginaryDatabase();
       });
-      this.$eventBus.$on("newDataIntoFileTemp", () => {
+      this.$eventBus.$on("tempChangeInfoToPai", () => {
         this.readFromFileTemp();
       });
     },
     beforeDestroy() {
       this.$eventBus.$off("saveDataPaiTemp");
-      this.$eventBus.$off("newDataIntoImaginaryDatabase");
-      this.$eventBus.$off("newDataIntoFileTemp");
+      this.$eventBus.$off("dbChangeInfoToPai");
+      this.$eventBus.$off("tempChangeInfoToPai");
     },
     data: () => ({
       dialogs: {

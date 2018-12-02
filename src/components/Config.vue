@@ -111,6 +111,12 @@
     name: "componentConfig",
     created () {
       this.readFromImaginaryDatabase();
+      this.$eventBus.$on("dbChangeInfoToConfig", () => {
+        this.readFromImaginaryDatabase();
+      });
+    },
+    beforeDestroy() {
+      this.$eventBus.$off("dbChangeInfoToConfig");
     },
     data: () => ({
       dialogs: {

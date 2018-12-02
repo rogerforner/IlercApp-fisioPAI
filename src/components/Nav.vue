@@ -150,8 +150,6 @@
               alert("El fitxer que intentes carregar no es vàlid");
             }
 
-            this.$eventBus.$emit("showImportMessage");
-            
           } catch(e) {
             alert("No s'ha importat el fitxer.");
           }
@@ -170,7 +168,8 @@
 
         try {
           fs.writeFileSync(filename, data, "utf-8");
-          this.$eventBus.$emit("newDataIntoImaginaryDatabase");
+          this.$eventBus.$emit("dbChangeInfoToPai");
+          this.$eventBus.$emit("dbChangeInfoToConfig");
         } catch(e) {
           alert("No s'han desat les dades.");
         }
@@ -188,7 +187,7 @@
 
         try {
           fs.writeFileSync(filename, data, "utf-8");
-          this.$eventBus.$emit("newDataIntoFileTemp");
+          this.$eventBus.$emit("tempChangeInfoToPai");
         } catch(e) {
           alert("S'han perdut les dades del formulari.");
         }
