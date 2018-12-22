@@ -379,7 +379,7 @@
             this.dataStore.data = [];
 
           } catch(e) {
-            alert("No s'ha desat el fitxer.\n"+e);
+            alert("No s'ha desat el fitxer.");
           }
         });
       },
