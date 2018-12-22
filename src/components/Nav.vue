@@ -102,7 +102,7 @@
       // S'empra un "EventBus" per mostrar-lo, capturant-lo en App.vue.
       // -----------------------------------------------------------------------
       infoFisioPAI() {
-        this.$eventBus.$emit("navInfo:change");
+        this.$eventBus.$emit("navInfo");
       },
 
       // Importar dades --------------------------------------------------------

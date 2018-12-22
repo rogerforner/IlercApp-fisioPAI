@@ -138,7 +138,7 @@
 
     <!-- Modal Generar Text -->
     <v-layout row justify-center>
-      <v-dialog v-model="dialogs.dialogWithGeneratedText" scrollable>
+      <v-dialog v-model="dialogs.dialogWithGeneratedText" scrollable persistent>
         <v-card>
           <!-- Títol -->
           <v-card-title primary-title class="headline">Text generat</v-card-title>
