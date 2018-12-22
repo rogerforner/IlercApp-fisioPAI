@@ -282,7 +282,7 @@
           try {
             fs.writeFileSync(filename, content, "utf-8");
           } catch(e) {
-            alert("No s'ha desat el fitxer.");
+            alert("No s'ha desat el fitxer.\n"+e);
           }
         });
       },
@@ -313,7 +313,7 @@
         try {
           fs.writeFileSync(filename, data, "utf-8");
         } catch(e) {
-          alert("No s'han desat les dades.");
+          alert("No s'han desat les dades.\n"+e);
         }
       },
 
@@ -334,12 +334,12 @@
           this.dataTables.userServices.data  = content[0].userServices.data;
           this.dataTables.userLocations.data = content[0].userLocations.data;
         } catch(e) {
-          alert("No existeix cap base de dades.");
+          alert("No existeix cap base de dades.\n"+e);
 
           try {
             fs.writeFileSync(filename, content, "utf-8");
           } catch(e) {
-            alert("No s'ha creat la base de dades.");
+            alert("No s'ha creat la base de dades.\n"+e);
           }
         }
       }

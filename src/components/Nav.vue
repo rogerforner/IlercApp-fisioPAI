@@ -147,11 +147,11 @@
               this.storeIntoImaginaryDatabase(fileContentJSON.data);
 
             } else {
-              alert("El fitxer que intentes carregar no es vàlid");
+              alert("El fitxer que intentes carregar no es vàlid.");
             }
 
           } catch(e) {
-            alert("No s'ha importat el fitxer.");
+            alert("No s'ha importat el fitxer.\n"+e);
           }
         });
       },
@@ -171,7 +171,7 @@
           this.$eventBus.$emit("dbChangeInfoToPai");
           this.$eventBus.$emit("dbChangeInfoToConfig");
         } catch(e) {
-          alert("No s'han desat les dades.");
+          alert("No s'han desat les dades.\n"+e);
         }
       },
 
@@ -189,7 +189,7 @@
           fs.writeFileSync(filename, data, "utf-8");
           this.$eventBus.$emit("tempChangeInfoToPai");
         } catch(e) {
-          alert("S'han perdut les dades del formulari.");
+          alert("S'han perdut les dades del formulari.\n"+e);
         }
       },
     }
