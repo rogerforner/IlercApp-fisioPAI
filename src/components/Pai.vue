@@ -391,11 +391,12 @@
       // fitxer, aquest es generarà de forma automàtica.
       // -----------------------------------------------------------------------
       readFromImaginaryDatabase() {
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.config.json";
         let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
 
         try {
-          content = JSON.parse(fs.readFileSync("fisiopai.config.json", "utf-8"));
+          content = JSON.parse(fs.readFileSync(filepath+"/"+filename, "utf-8"));
 
           this.dataFormItems.userServiceItems  = []; // Buidar.
           this.dataFormItems.userLocationItems = [];
@@ -406,7 +407,7 @@
           // alert("No existeix cap base de dades.\n"+e);
 
           try {
-            fs.writeFileSync(filename, content, "utf-8");
+            fs.writeFileSync(filepath+"/"+filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha creat la base de dades.\n"+e);
           }
@@ -427,9 +428,10 @@
         let content = JSON.stringify(this.dataStore.data);
 
         // Desar dades en fitxer temporal.
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.temp.json";
         try {
-          fs.writeFileSync(filename, content, "utf-8");
+          fs.writeFileSync(filepath+"/"+filename, content, "utf-8");
 
           // Buidem "data".
           this.dataStore.data = [];
@@ -444,11 +446,12 @@
       // fitxer se'n generarà un de forma automàtica.
       // -----------------------------------------------------------------------
       readFromFileTemp() {
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.temp.json";
         let content  = '[{"userSex":"dona","userAge":"","userService":null,"userLocation":null,"userAntecedents":"","userCognitiveState":null,"userTransfers":"","userMarch":"","userSupportProducts":"","userMuscularBalance":"","userJointBalance":"","userPain":"","userTtm":"","userEvolution":"","userCutaneousState":"","userSpecificGuidelines":"","userContentions":"","userTo":"","userFalls":"","userRiskGroup":null,"userTinettiTest":"","userDowntonTest":"","userBarthelTest":"","userObservations":"","userDetectionNeeds":""}]';
 
         try {
-          content = JSON.parse(fs.readFileSync("fisiopai.temp.json", "utf-8"));
+          content = JSON.parse(fs.readFileSync(filepath+"/"+filename, "utf-8"));
 
           this.dataForm  = []; // Buidar.
 
@@ -457,7 +460,7 @@
           // alert("No existeix la taula per poder emmagatzemar les dades del formulari temporalment.\n"+e);
 
           try {
-            fs.writeFileSync(filename, content, "utf-8");
+            fs.writeFileSync(filepath+"/"+filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha creat la taula per poder emmagatzemar les dades del formulari temporalment.\n"+e);
           }

@@ -65,10 +65,10 @@
                     <td>{{props.item.name}}</td>
                     <td class="text-xs-right">
                       <v-item-group class="v-btn-group">
-                        <v-btn flat icon dark color="primary" @click="openForm('location', 'update', props.index)">
+                        <v-btn flat icon dark color="primary" @click="openForm('location', 'update', props.index, props.item.name)">
                           <v-icon small>fa-pencil-alt</v-icon>
                         </v-btn>
-                        <v-btn flat icon dark color="error" @click="openForm('location', 'destroy', props.index)">
+                        <v-btn flat icon dark color="error" @click="openForm('location', 'destroy', props.index, props.item.name)">
                           <v-icon small>fa-trash-alt</v-icon>
                         </v-btn>
                       </v-item-group>
@@ -84,7 +84,7 @@
 
     <!-- Formulari
     =========================================================================-->
-    <v-dialog v-model="dialogs.form.isFormVisible" max-width="500px">
+    <v-dialog v-model="dialogs.form.isFormVisible" max-width="500px" persistent>
       <v-card>
         <v-card-title>
           <span class="headline">{{dialogs.form.title}}</span>
@@ -308,10 +308,11 @@
         });
 
         let data     = JSON.stringify(this.dataStore.data);
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.config.json";
 
         try {
-          fs.writeFileSync(filename, data, "utf-8");
+          fs.writeFileSync(filepath+"/"+filename, data, "utf-8");
         } catch(e) {
           alert("No s'han desat les dades.\n"+e);
         }
@@ -322,11 +323,12 @@
       // fitxer, aquest es generarà de forma automàtica.
       // -----------------------------------------------------------------------
       readFromImaginaryDatabase() {
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.config.json";
         let content  = '[{"userServices":{"data":[]},"userLocations":{"data":[]}}]';
 
         try {
-          content = JSON.parse(fs.readFileSync("fisiopai.config.json", "utf-8"));
+          content = JSON.parse(fs.readFileSync(filepath+"/"+filename, "utf-8"));
 
           this.dataTables.userServices.data  = []; // Buidar.
           this.dataTables.userLocations.data = [];
@@ -337,7 +339,7 @@
           alert("No existeix cap base de dades.\n"+e);
 
           try {
-            fs.writeFileSync(filename, content, "utf-8");
+            fs.writeFileSync(filepath+"/"+filename, content, "utf-8");
           } catch(e) {
             alert("No s'ha creat la base de dades.\n"+e);
           }

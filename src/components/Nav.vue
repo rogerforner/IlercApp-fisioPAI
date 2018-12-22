@@ -164,10 +164,11 @@
       // -----------------------------------------------------------------------
       storeIntoImaginaryDatabase(dataFile) {
         let data     = JSON.stringify(dataFile);
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.config.json";
 
         try {
-          fs.writeFileSync(filename, data, "utf-8");
+          fs.writeFileSync(filepath+"/"+filename, data, "utf-8");
           this.$eventBus.$emit("dbChangeInfoToPai");
           this.$eventBus.$emit("dbChangeInfoToConfig");
         } catch(e) {
@@ -183,10 +184,11 @@
       // -----------------------------------------------------------------------
       saveDataFormToFileTemp(dataFile) {
         let data     = JSON.stringify(dataFile);
+        let filepath = app.getPath("userData");
         let filename = "fisiopai.temp.json";
 
         try {
-          fs.writeFileSync(filename, data, "utf-8");
+          fs.writeFileSync(filepath+"/"+filename, data, "utf-8");
           this.$eventBus.$emit("tempChangeInfoToPai");
         } catch(e) {
           alert("S'han perdut les dades del formulari.\n"+e);

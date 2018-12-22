@@ -22,7 +22,7 @@
           <!-- Cos -->
           <v-card-text>
             <v-list two-line>
-              <v-list-tile>
+              <v-list-tile @click="openWebsite('rff')">
                 <v-list-tile-action>
                   <v-icon color="primary">fa-user-circle</v-icon>
                 </v-list-tile-action>
@@ -37,7 +37,7 @@
                 </v-list-tile-action>
               </v-list-tile>
 
-              <v-list-tile>
+              <v-list-tile @click="openWebsite('fisiopai')">
                 <v-list-tile-action>
                   <v-icon color="primary">fa-code</v-icon>
                 </v-list-tile-action>
@@ -68,7 +68,7 @@
 
 <script>
 import Navigation from './components/Nav'
-const {app} = require("electron").remote;
+const {app, shell} = require("electron").remote;
 export default {
   name: "fisiopai",
   created () {
@@ -89,6 +89,16 @@ export default {
       },
       fisiopai: {
         version: app.getVersion()
+      }
+    }
+  },
+  methods: {
+    /* rogerforner.com ********************************************************/
+    openWebsite(page) {
+      if (page == "rff") {
+        shell.openExternal("https://rogerforner.com/");
+      } else {
+        shell.openExternal("https://rogerforner.com/");
       }
     }
   }
