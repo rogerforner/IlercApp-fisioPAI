@@ -154,7 +154,7 @@
               }
 
               info = {
-                color: "success",
+                color: "primary",
                 text: text
               }
               this.$eventBus.$emit("showSnackbar", info);
@@ -165,7 +165,7 @@
               this.storeIntoImaginaryDatabase(fileContentJSON.data);
 
               info = {
-                color: "success",
+                color: "primary",
                 text: "Configuració importada satisfactòriament."
               }
               this.$eventBus.$emit("showSnackbar", info);
