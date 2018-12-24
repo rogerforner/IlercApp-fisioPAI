@@ -10,6 +10,15 @@
       <router-view/>
     </v-content>
 
+    <!-- Missatge informatiu
+    =========================================================================-->
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.text}}
+      <v-btn flat @click="snackbar.show = false">
+        <v-icon>fa-times-circle</v-icon>
+      </v-btn>
+    </v-snackbar>
+
     <!-- Roger Forner Fabre
     =========================================================================-->
     <v-layout row justify-center>
@@ -75,6 +84,11 @@ export default {
     this.$eventBus.$on("navInfo", () => {
       this.dialogs.rogerFornerFabre = true;
     });
+    this.$eventBus.$on("showSnackbar", (data) => {
+      this.snackbar.show  = true;
+      this.snackbar.color = data.color;
+      this.snackbar.text  = data.text;
+    });
   },
   beforeDestroy() {
     this.$eventBus.$off("navInfo");
@@ -86,6 +100,11 @@ export default {
     return {
       dialogs: {
         rogerFornerFabre: false,
+      },
+      snackbar: {
+        show: false,
+        color: "",
+        text: ""
       },
       fisiopai: {
         version: app.getVersion()

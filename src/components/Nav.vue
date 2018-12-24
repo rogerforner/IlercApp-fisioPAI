@@ -125,6 +125,8 @@
 
         // Obrir finestra per obtenir dades del fitxer.
         dialog.showOpenDialog(null, options, (filePath) => {
+          // Mostrar informació sobre l'acció realitzada (objecte).
+          let info = {};
           // Ha de ser una cadena per a "fs.readFileSync()".
           let filePathString = String(filePath);
           // "fs.readFileSync()" ens retorna en Buffer i ho passarem a JSON.
@@ -137,21 +139,51 @@
             
             // Saber si ens passen les dades del formulari o de configuració.
             if (fileContentJSON.dataType == "fisiopaiForm") {
+              // Saber sexe de usuari/a per mostrar en informació.
+              let userSex = fileContentJSON.data[0].userSex;
+              let text;
+
               // Sobreescriure el fitxer temporal.
               // Només passem les dades corresponents als camps del formulari.
               this.saveDataFormToFileTemp(fileContentJSON.data);
+
+              if (userSex == "dona") {
+                text = "Dades de l'usuària importades satisfactòriament.";
+              } else {
+                text = "Dades de l'usuari importades satisfactòriament.";
+              }
+
+              info = {
+                color: "success",
+                text: text
+              }
+              this.$eventBus.$emit("showSnackbar", info);
 
             } else if (fileContentJSON.dataType == "fisiopaiConfig") {
               // Sobreescriure el fitxer de configuració.
               // Només passem les dades de Serveis i Ubicacions.
               this.storeIntoImaginaryDatabase(fileContentJSON.data);
 
+              info = {
+                color: "success",
+                text: "Configuració importada satisfactòriament."
+              }
+              this.$eventBus.$emit("showSnackbar", info);
+
             } else {
-              alert("El fitxer que intentes carregar no es vàlid.");
+              info = {
+                color: "error",
+                text: "El fitxer seleccionat no es vàlid."
+              }
+              this.$eventBus.$emit("showSnackbar", info);
             }
 
           } catch(e) {
-            alert("No s'ha importat el fitxer.\n"+e);
+            info = {
+              color: "amber darken-4",
+              text: "No s'ha importat cap fitxer."
+            }
+            this.$eventBus.$emit("showSnackbar", info);
           }
         });
       },
