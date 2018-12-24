@@ -195,6 +195,7 @@
       // app, permetent la recuperació d'aquestes.
       // -----------------------------------------------------------------------
       storeIntoImaginaryDatabase(dataFile) {
+        let info     = {};
         let data     = JSON.stringify(dataFile);
         let filepath = app.getPath("userData");
         let filename = "fisiopai.config.json";
@@ -204,7 +205,11 @@
           this.$eventBus.$emit("dbChangeInfoToPai");
           this.$eventBus.$emit("dbChangeInfoToConfig");
         } catch(e) {
-          alert("No s'han desat les dades.\n"+e);
+          info = {
+            color: "amber darken-4",
+            text: "No s'han desat les dades."
+          }
+          this.$eventBus.$emit("showSnackbar", info);
         }
       },
 
