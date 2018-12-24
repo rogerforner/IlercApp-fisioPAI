@@ -353,6 +353,9 @@
       // altre moment.
       // -----------------------------------------------------------------------
       saveDataFormToFile() {
+        // Mostrar informació sobre l'acció realitzada (objecte).
+        let info = {};
+        
         // Guardar dades del formulari en array preparat per a aquestes.
         this.dataStore.data.push(this.dataForm);
 
@@ -379,7 +382,11 @@
             this.dataStore.data = [];
 
           } catch(e) {
-            alert("No s'ha desat el fitxer.");
+            info = {
+              color: "amber darken-4",
+              text: "No s'ha desat el fitxer."
+            }
+            this.$eventBus.$emit("showSnackbar", info);
           }
         });
       },
