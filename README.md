@@ -31,7 +31,7 @@ Per més informació:
 - [Vuetify](https://vuetifyjs.com/es-MX/)
 - [Vuetify vue-cli 3 plugin](https://github.com/vuetifyjs/vue-cli-plugin-vuetify)
 - [Vue.js](https://vuejs.org/)
-- [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/#installation)
+- [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
 
 ---
 
