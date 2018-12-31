@@ -342,7 +342,8 @@
       // -----------------------------------------------------------------------
       clearForm() {
         this.$refs.form.reset();
-        this.dataForm = this.dataForm;
+        this.dataForm.userSex = "dona";
+        this.dataForm         = this.dataForm;
         window.scrollTo(0,0); // Enviar al principi de la pàgina.
       },
 

@@ -117,7 +117,7 @@ export default {
       if (page == "rff") {
         shell.openExternal("https://rogerforner.com/");
       } else {
-        shell.openExternal("https://rogerforner.com/");
+        shell.openExternal("https://rogerforner.com/project/fisiopai/");
       }
     }
   }
