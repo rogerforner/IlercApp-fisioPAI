@@ -19,10 +19,10 @@ git add . && git commit -m "txt" && git push -u origin master
 
 ```bash
 # Desenvolupament
-yarn serve:electron
+yarn electron:serve
 
 # Producció
-yarn build:electron
+yarn electron:build
 ```
 
 ---
