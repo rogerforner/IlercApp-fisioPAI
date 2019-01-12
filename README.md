@@ -6,7 +6,7 @@
 
 ```bash
 # Clonar repositori
-git clone http://localhost:3000/rogerforner/fisioPAI.git
+git clone https://github.com/rogerforner/fisioPAI.git
 
 # Instal·lar dependències
 yarn install
