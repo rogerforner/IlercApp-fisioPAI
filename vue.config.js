@@ -3,7 +3,13 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         win: {
-          icon: './fisiopai.png'
+          icon: './icon.png'
+        },
+        mac: {
+          icon: './icon.png'
+        },
+        linux: {
+          icon: './icon.png'
         }
       }
     }
